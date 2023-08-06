@@ -1,8 +1,6 @@
 'use client';
 import React, { useState } from 'react';
 
-import FiverrGig from './FiverrGig.js';
-
 export default function Contact({onSubmit, check}) {
   const [email, setEmail] = useState()
 
@@ -104,7 +102,6 @@ export default function Contact({onSubmit, check}) {
         </div>
       </div>
     </section>
-    <FiverrGig/>
     </>
   );
 }
