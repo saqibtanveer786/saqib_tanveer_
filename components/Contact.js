@@ -1,22 +1,48 @@
 'use client';
+import { data } from 'autoprefixer';
 import React, { useState } from 'react';
 
 export default function Contact({onSubmit, check}) {
   const [email, setEmail] = useState()
+  const [data, setData] = useState()
 
-  async function callApi(e) {
+  // async function callApi(e) {
+  //   e.preventDefault()
+  //   const url = `http://localhost:3000/api/submail`
+  //   const response = await fetch(url, {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //     },
+  //     body: JSON.stringify(email)
+  //   })
+  //   const jsonResponse = await response.json()
+  //   console.log(jsonResponse)
+  // }
+
+  async function collectData(e) {
     e.preventDefault()
-    const url = `http://localhost:3000/api/submail`
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(email)
-    })
-    const jsonResponse = await response.json()
-    console.log(jsonResponse)
+    setData({...data, [e.target.name] : e.target.value})
   }
+
+  async function sendData(e) {
+    e.preventDefault()
+    const url = process.env.SUBMIT_FORM || `http://localhost:3000/api/contactformdata`
+    const responseData = await fetch(url, {
+      method: 'post',
+      headers: {
+        "Content-Type" : 'application/json'
+      },
+      body : JSON.stringify(data)
+    })
+    const response = await responseData.json()
+    if (response.message==='Saved Successfully') {
+      const showMessage = document.getElementById('showMessage')
+      showMessage.classList.remove('hidden')
+      showMessage.innerText = response.message
+    }
+  }
+
   return (
     <>
     <section className="text-gray-600 body-font relative" id="contact">
@@ -45,6 +71,7 @@ export default function Contact({onSubmit, check}) {
                   id="name"
                   name="name"
                   className="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                  onChange={collectData}
                 />
               </div>
             </div>
@@ -62,8 +89,8 @@ export default function Contact({onSubmit, check}) {
                   name="email"
                   className="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
                   onChange={(e)=>{e.preventDefault(); 
-                  setEmail(e.target.value)
-                  console.log(email)
+                  setEmail(e.target.value);
+                  collectData(e)
                   }}
                 />
               </div>
@@ -80,13 +107,15 @@ export default function Contact({onSubmit, check}) {
                   id="message"
                   name="message"
                   className="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"
+                  onChange={collectData}
                 ></textarea>
+                <p id='showMessage' className='hidden'></p>
               </div>
             </div>
             <div className="p-2 w-full">
               <button 
                 className="cursor-pointer flex mx-auto text-white bg-blue-500 border-0 py-2 px-8 focus:outline-none hover:bg-blue-600 rounded text-lg"
-               onClick={callApi}
+               onClick={sendData}
               >Submit</button>
             </div>
             <div className="p-2 w-full pt-8 mt-8 border-t border-gray-200 text-center">

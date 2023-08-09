@@ -23,7 +23,7 @@ export default function PortfolioForPortfolioPage({
             <h1 className="text-gray-900 md:text-3xl title-font font-medium mb-1">
               {title}
             </h1>
-            <p className="leading-relaxed">{description}</p>
+            <p className="leading-relaxed lg:px-0 px-4 text-left sm:text-center lg:text-left">{description}</p>
           </div>
         </div>
       </div>
