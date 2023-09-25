@@ -13,23 +13,25 @@ export default function Contact({ onSubmit, check }) {
   const { isLoading, setIsLoading } = useContext(LoadingContext)
   const { setAlertMessage, setAlertStatus, setShowAlert } = useContext(AlertContext)
 
+  // data collecter
   async function collectData(e) {
     e.preventDefault()
     setData({ ...data, [e.target.name]: e.target.value })
   }
 
+  // form handler
   async function submitHandler(e) {
     e.preventDefault();
     try {
       setIsLoading(true);
       const response = await submitForm(data)
-      if (response.status) {
+      if (response.status) {          // In case of success
         setShowAlert(true)
         setAlertMessage(response.message)
         setAlertStatus("success")
         setData({})
       }
-      if (!response.status) {
+      if (!response.status) {         // In case of error
         setShowAlert(true)
         setAlertMessage(response.message)
         setAlertStatus("error")
@@ -43,6 +45,7 @@ export default function Contact({ onSubmit, check }) {
     }
 
   }
+
   return (
     <>
       <section className="text-gray-600 body-font relative" id="contact">

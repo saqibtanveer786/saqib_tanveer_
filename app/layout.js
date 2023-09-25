@@ -1,12 +1,16 @@
-import './globals.css';
 import { Inter } from 'next/font/google';
+
+// css files
+import './globals.css';
 
 // Importing Components
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import Toast from '@/components/Toast';
+
+// Importing Context Providers
 import LoadingContextProvider from '@/contextproviders/LoadingContextProvider';
 import AlertContextProvider from '@/contextproviders/AlertContextProvider';
-import Toast from '@/components/Toast';
 
 const inter = Inter({ subsets: ['latin'] });
 

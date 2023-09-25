@@ -11,7 +11,7 @@ import { TbBrandNextjs } from 'react-icons/tb';
 export default function Skills() {
   return (
     <section className="text-gray-600 body-font">
-      <div className="container px-5 pt-24 mx-auto w-[90%] flex items-center justify-center ">
+      <div className="container px-5 pt-24 mx-auto w-[98%] flex items-center justify-center ">
         <div className="flex flex-wrap w-full items-center justify-center ">
           <h1 className="title-font sm:text-4xl text-3xl mb-12 font-medium text-gray-900">
             My Skills
