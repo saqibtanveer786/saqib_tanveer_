@@ -1,51 +1,54 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+
+import { submitForm } from '@/lib/ServerActions';
+import { AlertContext, LoadingContext } from '@/lib/contexts';
 
 export default function Contact({ onSubmit, check }) {
   const [email, setEmail] = useState()
   const [data, setData] = useState()
 
-  // async function callApi(e) {
-  //   e.preventDefault()
-  //   const url = `http://localhost:3000/api/submail`
-  //   const response = await fetch(url, {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json'
-  //     },
-  //     body: JSON.stringify(email)
-  //   })
-  //   const jsonResponse = await response.json()
-  //   console.log(jsonResponse)
-  // }
+
+  // consuming the context
+  const { isLoading, setIsLoading } = useContext(LoadingContext)
+  const { setAlertMessage, setAlertStatus, setShowAlert } = useContext(AlertContext)
 
   async function collectData(e) {
     e.preventDefault()
     setData({ ...data, [e.target.name]: e.target.value })
   }
 
-  async function sendData(e) {
-    e.preventDefault()
-    const url = `${process.env.HOST}/api/contactformdata`
-    const response = await fetch(url, {
-      method: 'post',
-      headers: {
-        "Content-Type": 'application/json'
-      },
-      body: JSON.stringify(data)
-    })
-    const jsonResponse = await response.json()
-    if (jsonResponse.message === 'Saved Successfully') {
-      const showMessage = document.getElementById('showMessage')
-      showMessage.classList.remove('hidden')
-      showMessage.innerText = response.message
+  async function submitHandler(e) {
+    e.preventDefault();
+    try {
+      setIsLoading(true);
+      const response = await submitForm(data)
+      if (response.status) {
+        setShowAlert(true)
+        setAlertMessage(response.message)
+        setAlertStatus("success")
+        setData({})
+      }
+      if (!response.status) {
+        setShowAlert(true)
+        setAlertMessage(response.message)
+        setAlertStatus("error")
+      }
+    } catch (error) {
+      setShowAlert(true)
+      setAlertMessage(error.message)
+      setAlertStatus("error")
+    } finally {
+      setIsLoading(false)
     }
-  }
 
+  }
   return (
     <>
       <section className="text-gray-600 body-font relative" id="contact">
         <div className="container px-4 pt-24 mx-auto w-[90%]">
+
+          {/* Headings */}
           <div className="flex flex-col text-center w-full mb-12">
             <h1 className="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">
               Contact Me
@@ -54,9 +57,11 @@ export default function Contact({ onSubmit, check }) {
               Let me know how can I help you.
             </p>
           </div>
+
           <div className="lg:w-1/2 md:w-2/3 mx-auto">
             <form className="flex flex-wrap -m-2" >
 
+              {/* Name */}
               <div className="p-2 w-1/2">
                 <div className="relative">
                   <label
@@ -67,6 +72,7 @@ export default function Contact({ onSubmit, check }) {
                   </label>
                   <input
                     type="text"
+                    value={data?.name || ""}
                     id="name"
                     name="name"
                     className="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
@@ -74,6 +80,8 @@ export default function Contact({ onSubmit, check }) {
                   />
                 </div>
               </div>
+
+              {/* Email */}
               <div className="p-2 w-1/2">
                 <div className="relative">
                   <label
@@ -84,6 +92,7 @@ export default function Contact({ onSubmit, check }) {
                   </label>
                   <input
                     type="email"
+                    value={data?.email || ""}
                     id="email"
                     name="email"
                     className="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
@@ -95,6 +104,8 @@ export default function Contact({ onSubmit, check }) {
                   />
                 </div>
               </div>
+
+              {/* Message Text Area */}
               <div className="p-2 w-full">
                 <div className="relative">
                   <label
@@ -105,6 +116,7 @@ export default function Contact({ onSubmit, check }) {
                   </label>
                   <textarea
                     id="message"
+                    value={data?.message || ""}
                     name="message"
                     className="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"
                     onChange={collectData}
@@ -112,12 +124,16 @@ export default function Contact({ onSubmit, check }) {
                   <p id='showMessage' className='hidden'></p>
                 </div>
               </div>
+
+              {/* Submit Button */}
               <div className="p-2 w-full">
                 <button
                   className="cursor-pointer flex mx-auto text-white bg-blue-500 border-0 py-2 px-8 focus:outline-none hover:bg-blue-600 rounded text-lg"
-                  onClick={sendData}
-                >Submit</button>
+                  onClick={submitHandler}
+                >{!isLoading ? "Submit" : "Sending...."}</button>
               </div>
+
+              {/* Contact Info */}
               <div className="p-2 w-full pt-8 mt-8 border-t border-gray-200 text-center">
                 <a className="text-blue-500">elven5055@email.com</a>
                 <p className="leading-normal my-5">
@@ -126,6 +142,7 @@ export default function Contact({ onSubmit, check }) {
                   Haripur KPK Pakistan, 22584
                 </p>
               </div>
+
             </form>
 
           </div>
