@@ -26,16 +26,16 @@ export default function Contact({ onSubmit, check }) {
 
   async function sendData(e) {
     e.preventDefault()
-    const url = process.env.SUBMIT_FORM || `http://localhost:3000/api/contactformdata`
-    const responseData = await fetch(url, {
+    const url = `${process.env.HOST}/api/contactformdata`
+    const response = await fetch(url, {
       method: 'post',
       headers: {
         "Content-Type": 'application/json'
       },
       body: JSON.stringify(data)
     })
-    const response = await responseData.json()
-    if (response.message === 'Saved Successfully') {
+    const jsonResponse = await response.json()
+    if (jsonResponse.message === 'Saved Successfully') {
       const showMessage = document.getElementById('showMessage')
       showMessage.classList.remove('hidden')
       showMessage.innerText = response.message
