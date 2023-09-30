@@ -41,7 +41,7 @@ export async function POST(request) {
                 },
                 body: JSON.stringify({
                     from: 'Acme <onboarding@resend.dev>',
-                    to: ['adward797@gmail.com'],
+                    to: [`${process.env.EMAIL}`],
                     subject: 'saqib_tanveer_',
                     html: `<div>
                             <h1>From, ${name}!</h1>
